@@ -11,7 +11,7 @@ export default function EventItem(props) {
     */
 
     let tags = [];
-    props.event.tags.forEach(tag => tags.push(<Tag text={tag}/>))
+    props.event.tags.forEach((tag, index) => tags.push(<Tag key={index} text={tag}/>))
 
     return (
         <View style={styles.wrapper}>
