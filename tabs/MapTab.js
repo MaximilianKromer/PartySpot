@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, Platform } from "react-native";
+import React from 'react';
+import { View, Platform } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Header from '../components/Header';
+import Datebar from '../components/Datebar';
 
 const Map = Platform.select({
     native: () => require('../components/Map').default,
@@ -13,7 +13,7 @@ export default function MapTab(props) {
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={{flex: 1, backgroundColor: '#fbfbfb'}}>
-                <Header title='Karte'/>
+                <Datebar />
                 <Map />
             </View>
         </SafeAreaView>
