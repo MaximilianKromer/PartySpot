@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, SectionList } from "react-native";
+import { View, Text, SectionList } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Tag from '../components/Tag';
 import EventItem from '../components/EventItem';
 import SectionHeader from '../components/SectionHeader';
 import Separator from '../components/Separator';
@@ -20,6 +19,7 @@ export default function ListTab(props) {
                     location: 'U-Bahnhof Schlosspark',
                     distance: 12,
                     time: 'Ab 22 Uhr',
+                    tags: ['Ab 16', 'Park'],
                     description: 'Lorem Ipsum dsafjk as sdahf. sdwiob av afiensa f asdfajsdf'
                 }, {
                     id: 2,
@@ -27,6 +27,7 @@ export default function ListTab(props) {
                     location: 'Lietzensee',
                     distance: 7,
                     time: 'Ab 18 Uhr',
+                    tags: ['Club', '4Free'],
                     description: 'Lorem Ipsum dsafjk as sdahf. sdwiob av afiensa f asdfajsdf'
                 },
             ]
@@ -39,6 +40,7 @@ export default function ListTab(props) {
                     location: 'U-Bahnhof Schlosspark',
                     distance: 12,
                     time: 'Ab 22 Uhr',
+                    tags: ['Festival'],
                     description: 'Lorem Ipsum dsafjk as sdahf. sdwiob av afiensa f asdfajsdf'
                 }, {
                     id: 2,
@@ -46,6 +48,7 @@ export default function ListTab(props) {
                     location: 'Lietzensee',
                     distance: 7,
                     time: 'Ab 18 Uhr',
+                    tags: ['BlahBlah', 'Park'],
                     description: 'Lorem Ipsum dsafjk as sdahf. sdwiob av afiensa f asdfajsdf'
                 },
             ]
@@ -58,6 +61,7 @@ export default function ListTab(props) {
                     location: 'U-Bahnhof Schlosspark',
                     distance: 12,
                     time: 'Ab 22 Uhr',
+                    tags: [],
                     description: 'Lorem Ipsum dsafjk as sdahf. sdwiob av afiensa f asdfajsdf'
                 }, {
                     id: 2,
@@ -65,6 +69,7 @@ export default function ListTab(props) {
                     location: 'Lietzensee',
                     distance: 7,
                     time: 'Ab 18 Uhr',
+                    tags: ['Club', 'Park', 'Ab 16', '4Free'],
                     description: 'Lorem Ipsum dsafjk as sdahf. sdwiob av afiensa f asdfajsdf'
                 },
             ]
@@ -89,10 +94,3 @@ export default function ListTab(props) {
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    text: {
-        alignItems: 'center',
-        marginVertical: 6,
-    },
-});
