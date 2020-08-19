@@ -7,6 +7,8 @@ export default function Searchbar(props) {
     return (
         <View style={searchBarStyles.header}>
             <Tag text="Berlin" />
+            <Tag text="Park" />
+            <Tag text="4Free" />
         </View>
     );
 }
