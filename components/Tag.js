@@ -22,7 +22,7 @@ export default function Tag(props) {
             color = colors.tag4;
             break;
         case '4Free':
-            color = colors.tag9;
+            color = colors.tag5;
             break;
         default:
             color = colors.primary;
