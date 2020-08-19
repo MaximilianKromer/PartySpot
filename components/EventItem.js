@@ -10,6 +10,9 @@ export default function EventItem(props) {
     const time = (props.event.date) ? props.event.time.substr(0, 5) + ' Uhr' : null;
     */
 
+    let tags = [];
+    props.event.tags.forEach(tag => tags.push(<Tag text={tag}/>))
+
     return (
         <View style={styles.wrapper}>
               <Text style={eventStyles.headline} >{props.event.name}</Text>
@@ -18,12 +21,7 @@ export default function EventItem(props) {
                   <Text style={eventStyles.distance} >{ props.event.distance ? props.event.distance + ' km' : null }</Text>
               </View>
               <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', marginTop: 10}}>
-                    <Tag text='Ab 16'/>
-                    <Tag text='Park'/>
-                    <Tag text='Club'/>
-                    <Tag text='Festival'/>
-                    <Tag text='4Free'/>
-                    <Tag text='Blablah'/>
+                    {tags}
                 </View>
               <Text style={eventStyles.time} >{ props.event.time }</Text>
               <Text style={eventStyles.text} >{props.event.description}</Text>
