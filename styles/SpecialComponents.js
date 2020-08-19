@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { colors, fonts } from '../styles/Global';
+import { color } from 'react-native-reanimated';
 
 export const searchBarStyles = StyleSheet.create({
     header: {
@@ -38,4 +39,25 @@ export const HeaderStyles = StyleSheet.create({
         fontSize: 22,
         marginLeft: 5, 
     },
+})
+
+export const UnsupportedStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 30,
+    },
+    text: {
+        fontFamily: fonts.regular,
+        color: colors.danger,
+        fontSize: 22,
+        marginLeft: 5,
+        textAlign: 'center',
+        marginVertical: 8,
+        marginHorizontal: 15,
+    },
+    bold: {
+        fontFamily: fonts.semibold,
+    }
 })
