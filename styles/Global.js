@@ -10,7 +10,7 @@ export const colors = {
     lightText: '#FEFEFE',
     darkText: '#141823', // 222222
     coloredText: '#FFCA36',
-    danger: '#',
+    danger: '#E55B56',
     tag1: '#F44336',
     tag2: '#E91E63',
     tag3: '#4CAF50',

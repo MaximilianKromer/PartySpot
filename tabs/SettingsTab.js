@@ -2,23 +2,31 @@ import React from 'react';
 import { StyleSheet, View, Text } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/Header';
+import CardButton from '../components/CardButton';
+import Card from '../components/Card';
 
 
 export default function SettingsTab(props) {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={{flex: 1, backgroundColor: '#7cc'}}>
-            <Header title='Einstellungen'/>
-                <Text style={styles.text} >Settings</Text>
+            <View style={{flex: 1, backgroundColor: '#fbfbfb'}}>
+                <Header title='Einstellungen'/>
+                <View style={styles.container}>
+                    <CardButton text='Standort aktivieren'/>
+                    <CardButton text='Benachrichtigungen' disabled={true}/>
+                    <CardButton text='Darkmode' disabled={true}/>
+                    <CardButton text='lokale Daten löschen' danger={true}/>
+                    <CardButton text='Feedback'/>
+                    <CardButton text='Datenschutz'/>
+                </View>
             </View>
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    text: {
-        alignItems: 'center',
-        marginVertical: 6,
+    container: {
+        padding: 10,
     },
 });
