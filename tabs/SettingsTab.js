@@ -16,7 +16,7 @@ export default function SettingsTab(props) {
                     <CardButton text='Standort aktivieren'/>
                     <CardButton text='Benachrichtigungen' disabled={true}/>
                     <CardButton text='Darkmode' disabled={true}/>
-                    <CardButton text='Soenden' disabled={false}/>
+                    <CardButton text='Spenden' disabled={false}/>
                     <CardButton text='Feedback'/>
                     <CardButton text='Datenschutz'/>
                     <CardButton text='lokale Daten löschen' danger={true}/>
