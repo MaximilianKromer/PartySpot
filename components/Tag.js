@@ -6,6 +6,8 @@ import { colors } from '../styles/Global';
 
 export default function Tag(props) {
 
+    const disabledStyle = props.disabled ? buttonStyles.disabled : null;
+
     let color;
 
     switch (props.text) {
@@ -30,7 +32,7 @@ export default function Tag(props) {
     }
 
     return (
-        <TouchableOpacity style={[buttonStyles.tag, {backgroundColor: color}]} onPress={props.onPress}>
+        <TouchableOpacity style={[buttonStyles.tag, disabledStyle, {backgroundColor: color}]} onPress={props.onPress}>
             <Text style={buttonStyles.text} >{props.text}</Text>
         </TouchableOpacity>
     );

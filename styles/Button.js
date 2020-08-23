@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { fonts, colors } from './Global';
-import { color } from 'react-native-reanimated';
 
 export const buttonStyles = StyleSheet.create({
     text: {
@@ -40,5 +39,10 @@ export const buttonStyles = StyleSheet.create({
         fontSize: 14,
         color: colors.darkText,
         marginHorizontal: 8,
+    },
+    disabled: {
+        opacity: 0.55,
+        elevation: 0,
+        shadowOpacity: 0,
     },
 });
