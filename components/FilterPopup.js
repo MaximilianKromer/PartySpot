@@ -6,6 +6,8 @@ import { modalStyles } from '../styles/Modal';
 import Slider from '@react-native-community/slider';
 import Tag from './Tag';
 import { buttonStyles } from '../styles/Button';
+import { useSelector, useDispatch } from 'react-redux';
+import { closePopup, setDistance, setCity, toogleTag } from '../state/slices/uiSlice';
 
 const Modal = Platform.select({
     native: () => require('react-native-modal').default,
@@ -13,32 +15,60 @@ const Modal = Platform.select({
 })();
 
 export default function FilterPopup(props) {
+    const popupOpened = useSelector(state => state.ui.popupOpened);
+    const city = useSelector(state => state.ui.city);
+    const distance = useSelector(state => state.ui.distance);
+    const tags = useSelector(state => state.ui.tags);
+    const dispatch = useDispatch();
+
+    const berlinButtonStyle = city ? modalStyles.buttonSelected : modalStyles.button;
+    const berlinButtonTextStyle = city ? modalStyles.buttonTextSelected : modalStyles.buttonText;
+
+    const sliderDisabled = city ? modalStyles.disabled : null;
+
+    let tagsComponent = [];
+    tags.forEach((tag, index) => {
+        tagsComponent.push(
+            <TouchableOpacity key={index} style={styles.moremargin} onPress={() => dispatch(toogleTag(index))}>
+                <Tag text={tag.text} disabled={!tag.activated}/>
+            </TouchableOpacity>
+        );
+    });
     
     return (
         <Modal
             style={styles.modal}
-            isVisible={true}    
+            isVisible={popupOpened}
+            onBackdropPress={() => dispatch(closePopup())}
+            backdropOpacity={0.6}
+            backdropTransitionOutTiming={0}
+            coverScreen={false}
+            onSwipeComplete={() => dispatch(closePopup())}
+            swipeDirection={'down'}
+            onBackButtonPress={() => dispatch(closePopup())}
+            propagateSwipe={true}
         >
             <View style={styles.modalContainer}>
                 <Text style={modalStyles.headline}>Stadt</Text>
 
                 <View style={styles.options} >
-                    <TouchableOpacity style={modalStyles.buttonSelected} >
-                        <Text style={modalStyles.buttonTextSelected} >Berlin</Text>
+                    <TouchableOpacity style={berlinButtonStyle} onPress={() => dispatch(setCity('Berlin'))}>
+                        <Text style={berlinButtonTextStyle} >Berlin</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={modalStyles.button} >
-                        <Text style={modalStyles.buttonText} >cooming soon...</Text>
+                        <Text style={modalStyles.buttonText} >coming soon...</Text>
                     </TouchableOpacity>
                 </View>
 
                 <Text style={modalStyles.headline} >Umkreis</Text>
                     
-                <Text style={modalStyles.sliderText} >25 km</Text>
+                <Text style={[modalStyles.sliderText, sliderDisabled]} >{distance} km</Text>
 
                 <Slider
                         value={25}
-                        style={styles.sliderStyle}
+                        onValueChange={(value) => dispatch(setDistance(value))}
+                        style={[styles.sliderStyle, sliderDisabled]}
                         minimumValue={1}
                         maximumValue={60}
                         step={1}
@@ -51,24 +81,7 @@ export default function FilterPopup(props) {
                 <Text style={modalStyles.headline} >Filter</Text>
 
                 <View style={styles.tags}>
-                    <TouchableOpacity style={styles.moremargin}>
-                        <Tag text='Ab 16' onPress={() => console.log('Test')}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.moremargin}>
-                        <Tag text='Park'/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.moremargin}>
-                        <Tag text='Festival'/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.moremargin}>
-                        <Tag text='Club' disabled={true}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.moremargin}>
-                        <Tag text='4Free' disabled={true}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.moremargin}>
-                        <Tag text='Blahblah' disabled={true}/>
-                    </TouchableOpacity>
+                    {tagsComponent}
                 </View>
             </View>
         </Modal>
@@ -96,7 +109,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 0,
         marginStart: 10,
-        marginTop: 5,
+        marginTop: 0,
     },
     thumbStyle: {
         elevation: 3,
@@ -107,15 +120,15 @@ const styles = StyleSheet.create({
     },
     sliderStyle: {
         width: '90%',
-        marginTop: 15,
+        marginTop: 5,
         marginBottom: 10,
         alignSelf: 'center',
     },
     tags: {
         flexDirection: 'row',
-        marginBottom: 35,
         marginHorizontal: 15,
-        marginTop: 15,
+        marginBottom: 15,
+        marginTop: 10,
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         justifyContent: 'flex-start',

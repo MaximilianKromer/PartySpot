@@ -32,8 +32,10 @@ export const modalStyles = StyleSheet.create({
         color: colors.lightText,
     },
     buttonSelected: {
+        borderStyle: 'solid',
         backgroundColor: colors.darkGray,
-        borderWidth: 0,
+        borderColor: colors.darkGray,
+        borderWidth: 1,
         margin: 10,
         borderRadius: 5,
     },
@@ -45,4 +47,7 @@ export const modalStyles = StyleSheet.create({
         color: colors.darkText,
         textAlign: 'center',
     },
+    disabled: {
+        opacity: 0.5,
+    }
 });

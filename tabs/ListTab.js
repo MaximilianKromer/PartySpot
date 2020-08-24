@@ -5,6 +5,7 @@ import EventItem from '../components/EventItem';
 import SectionHeader from '../components/SectionHeader';
 import Separator from '../components/Separator';
 import Searchbar from '../components/Searchbar';
+import FilterPopup from '../components/FilterPopup';
 
 
 export default function ListTab(props) {
@@ -91,6 +92,7 @@ export default function ListTab(props) {
                     stickySectionHeadersEnabled={true}
                 />
             </View>
+            <FilterPopup />
         </SafeAreaView>
     )
 }
