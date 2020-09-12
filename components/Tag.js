@@ -31,9 +31,17 @@ export default function Tag(props) {
             break;
     }
 
+    if (props.touchable) {
+        return (
+            <TouchableOpacity style={[buttonStyles.tag, disabledStyle, {backgroundColor: color}]} onPress={props.onPress}>
+                <Text style={buttonStyles.text} >{props.text}</Text>
+            </TouchableOpacity>
+        );
+    }
+
     return (
-        <TouchableOpacity style={[buttonStyles.tag, disabledStyle, {backgroundColor: color}]} onPress={props.onPress}>
+        <View style={[buttonStyles.tag, disabledStyle, {backgroundColor: color}]}>
             <Text style={buttonStyles.text} >{props.text}</Text>
-        </TouchableOpacity>
+        </View>
     );
 }
