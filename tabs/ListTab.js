@@ -1,16 +1,21 @@
-import React from 'react';
-import { View, Text, SectionList } from "react-native";
+import React, { useState } from 'react';
+import { View, Text, SectionList, RefreshControl } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EventItem from '../components/EventItem';
 import SectionHeader from '../components/SectionHeader';
 import Separator from '../components/Separator';
 import Searchbar from '../components/Searchbar';
 import FilterPopup from '../components/FilterPopup';
+import { useSelector } from 'react-redux';
 
 
 export default function ListTab(props) {
+    //const [refreshing, setRefreshing] = useState(false);
+    const refreshing = useSelector(state => state.events.fetching);
 
-    const events = [
+    const events = useSelector(state => state.events.filtered);
+    // const events = [{ date: 'Keine Suchergebnisse', data: [] }]
+    /*const events = [
         {
             date: '14. August',
             data: [
@@ -75,7 +80,7 @@ export default function ListTab(props) {
                 },
             ]
         },
-    ];
+    ];*/
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -83,7 +88,8 @@ export default function ListTab(props) {
                 <Searchbar />
                 <SectionList
                     sections={events}
-                    refreshing={false}
+                    refreshing={refreshing}
+                    onRefresh={() => true} // adding refresh functionality in future updates
                     renderItem={({ item }) => <EventItem event={item} />}
                     renderSectionHeader={({ section: { date } }) => (
                         <SectionHeader date={date}/>
