@@ -8,6 +8,7 @@ import Tag from './Tag';
 import { buttonStyles } from '../styles/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { closePopup, setDistance, setCity, toogleTag } from '../state/slices/uiSlice';
+import { fetchByCity } from '../state/slices/eventsSlice';
 
 const Modal = Platform.select({
     native: () => require('react-native-modal').default,
@@ -56,7 +57,7 @@ export default function FilterPopup(props) {
                         <Text style={berlinButtonTextStyle} >Berlin</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={modalStyles.button} >
+                    <TouchableOpacity style={modalStyles.button} onPress={() => (true)}>
                         <Text style={modalStyles.buttonText} >coming soon...</Text>
                     </TouchableOpacity>
                 </View>
@@ -66,7 +67,7 @@ export default function FilterPopup(props) {
                 <Text style={[modalStyles.sliderText, sliderDisabled]} >{distance} km</Text>
 
                 <Slider
-                        value={25}
+                        value={distance}
                         onValueChange={(value) => dispatch(setDistance(value))}
                         style={[styles.sliderStyle, sliderDisabled]}
                         minimumValue={1}
