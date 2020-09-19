@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import { eventStyles } from '../styles/Event';
 import Tag from '../components/Tag';
 import WebsiteButton from '../components/WebsiteButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { toogleFavourite } from '../state/slices/eventsSlice';
 
 const LocationPreview = Platform.select({
     native: () => require('../components/LocationPreview').default,
@@ -13,8 +15,12 @@ const LocationPreview = Platform.select({
 
 
 export default function DetailScreen(props) {
-    const [favourite, setFavourite] = useState(false);
     const event = props.route.params.event;
+
+    const favourites = useSelector(state => state.events.favourites)
+    const dispatch = useDispatch();
+
+    const favourite = favourites.some((e) => e.id == event.id);
 
     let tags = [];
     const rootTags = event.tags ? event.tags : [];
@@ -24,7 +30,7 @@ export default function DetailScreen(props) {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Header title='Details' backButton={true} favouriteIcon={true} isFavourite={favourite} onPressFavourite={() => setFavourite(favourite ? false : true)}/>
+            <Header title='Details' backButton={true} favouriteIcon={true} isFavourite={favourite} onPressFavourite={() => dispatch(toogleFavourite(event))}/>
             <ScrollView style={{flex: 1, backgroundColor: '#fbfbfb'}}>
                 <View style={styles.container}>
                     <Text style={eventStyles.time}>{event.dateString}</Text>
