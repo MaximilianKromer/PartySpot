@@ -28,4 +28,14 @@ export const eventStyles = StyleSheet.create({
         fontSize: 14,
         color: colors.darkText,
     },
+    website: {
+        fontFamily: fonts.regular,
+        fontSize: 18,
+        color: colors.urlText,
+    },
+    navBtn: {
+        fontFamily: fonts.semibold,
+        fontSize: 14,
+        color: colors.urlText,
+    }
 });

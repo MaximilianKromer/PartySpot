@@ -25,6 +25,26 @@ export const HeaderStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
+    backBtn: {
+        alignItems: 'center',
+        paddingVertical: 4,
+        marginRight: 6,
+        marginLeft: 3,
+        width: 30,
+        height: 30,
+    },
+    favBtn: {
+        position: 'absolute',
+        alignItems: 'center',
+        paddingVertical: 2,
+        marginRight: 16,
+        marginVertical: 14,
+        width: 30,
+        height: 30,
+        right: 0,
+        top: 0,
+        
+    },
 })
 
 export const UnsupportedStyles = StyleSheet.create({
