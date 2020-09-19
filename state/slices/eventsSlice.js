@@ -117,6 +117,7 @@ const initialState = {
     lastFetch: null,
     filtered: [],
     raw: [],
+    favourites: [],
 }
 
 export const eventsSlice = createSlice({
@@ -128,7 +129,27 @@ export const eventsSlice = createSlice({
         },
         updateFiltered: (state, action) => {
             state.filtered = action.payload;
-        }
+        },
+        toogleFavourite: (state, action) => {
+            state.favourites = state.favourites.filter((e) => new Date(e.date) >= Date.now());
+            if (state.favourites.filter((e) => e.id == action.payload.id).length) {
+                state.favourites = state.favourites.filter((e) => e.id != action.payload.id)
+            } else {
+                state.favourites.push(action.payload);
+                state.favourites.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+        },
+        resetEvents: (state, action) => {
+            state.user = {
+                latitude: 52.519806,
+                longitude: 13.405167,
+            };
+            state.fetching = false;
+            state.lastFetch = null;
+            state.filtered = [];
+            state.raw = [];
+            state.favourites = [];
+        },
     },
     extraReducers: {
         [fetchByCity.pending]: (state, action) => {
@@ -171,6 +192,6 @@ export const eventsSlice = createSlice({
     }
 });
 
-export const { updateRaw } = eventsSlice.actions;
+export const { updateRaw, toogleFavourite, resetEvents } = eventsSlice.actions;
 
 export default eventsSlice.reducer;
