@@ -43,7 +43,8 @@ export const fetchByGPS = createAsyncThunk(
     'events/fetchByGPS',
     async (payload, { dispatch, rejectWithValue, getState }) => {
         try {
-            const { status, statusText, data } = await Backend.post('/get_events_by_pos.php', { latitude: 52.519806, longitude: 13.405167, distance: 60 });
+            const state = getState();
+            const { status, statusText, data } = await Backend.post('/get_events_by_pos.php', { latitude: state.events.user.latitude, longitude: state.events.user.longitude, distance: 60 });
             // console.log(getState(), status, statusText, data);
             if (status == 200 && data.error == false) {
                 data.events.forEach(event => {
@@ -52,6 +53,34 @@ export const fetchByGPS = createAsyncThunk(
                 });
                 dispatch(updateRaw(data.events));
                 dispatch(applyFilter());
+            }
+            if (data.error) {
+                rejectWithValue(data.message);
+            }
+            return { status, statusText, data };
+        } catch (err) {
+            console.log('Error while fetching: ', err, err.response);
+            if (!err.response) {
+                throw err
+            }
+            const rejectValue = err.response.data.message ? err.response.data.message : err.response.statusText;
+            return rejectWithValue(rejectValue);
+        }
+    }
+);
+
+export const fetchForMap = createAsyncThunk(
+    'events/fetchForMap',
+    async (payload, { dispatch, rejectWithValue, getState }) => {
+        try {
+            const { status, statusText, data } = await Backend.post('/get_events_by_pos.php', { latitude: payload.latitude, longitude: payload.longitude, distance: 60 });
+            if (status == 200 && data.error == false) {
+                data.events.forEach(event => {
+                    event.tags = event.tags.length > 0 ? event.tags.split(',') : [];
+                    event.dateString = format(Date.parse(event.date), 'd. MMMM', {locale: de});
+                });
+                dispatch(updateMapPos({ latitude: payload.latitude, longitude: payload.longitude }));
+                return { status, statusText, data };
             }
             if (data.error) {
                 rejectWithValue(data.message);
@@ -115,8 +144,14 @@ const initialState = {
     },
     fetching: false,
     lastFetch: null,
+    lastMapPos: {
+        latitude: null,
+        longitude: null,
+    },
+    map: [],
     filtered: [],
     raw: [],
+    favourites: [],
 }
 
 export const eventsSlice = createSlice({
@@ -128,7 +163,35 @@ export const eventsSlice = createSlice({
         },
         updateFiltered: (state, action) => {
             state.filtered = action.payload;
-        }
+        },
+        updateMapPos: (state, action) => {
+            state.lastMapPos = action.payload;
+        },
+        toogleFavourite: (state, action) => {
+            state.favourites = state.favourites.filter((e) => new Date(e.date) >= Date.now());
+            if (state.favourites.filter((e) => e.id == action.payload.id).length) {
+                state.favourites = state.favourites.filter((e) => e.id != action.payload.id)
+            } else {
+                state.favourites.push(action.payload);
+                state.favourites.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+        },
+        resetEvents: (state, action) => {
+            state.user = {
+                latitude: 52.519806,
+                longitude: 13.405167,
+            };
+            state.fetching = false;
+            state.lastFetch = null;
+            state.lastMapPos = {
+                latitude: null,
+                longitude: null,
+            };
+            state.map = [];
+            state.filtered = [];
+            state.raw = [];
+            state.favourites = [];
+        },
     },
     extraReducers: {
         [fetchByCity.pending]: (state, action) => {
@@ -165,12 +228,28 @@ export const eventsSlice = createSlice({
             state.lastFetch = Date.now();
         },
 
+        [fetchForMap.pending]: (state, action) => {
+            state.fetching = true;
+        },
+        [fetchForMap.rejected]: (state, action) => {
+            state.fetching = false;
+            if (!action.payload) {
+                // offline
+            } else {
+                // anderer Fehler
+            }
+        },
+        [fetchForMap.fulfilled]: (state, action) => {
+            state.fetching = false;
+            state.map = action.payload.data.events;
+        },
+
         [applyFilter.fulfilled]: (state, action) => {
             state.filtered = action.payload;
         }
     }
 });
 
-export const { updateRaw } = eventsSlice.actions;
+export const { updateRaw, toogleFavourite, resetEvents, updateMapPos } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

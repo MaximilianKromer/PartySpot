@@ -1,13 +1,46 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from "react-native";
 import MapView, { Marker, Callout } from 'react-native-maps';
+import { event } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
+import { calcDistance } from '../helper/Distance';
+import { fetchForMap } from '../state/slices/eventsSlice';
 
 export default function Map(props) {
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
     const [region, setRegion] = useState({
         latitude: 52.519802,
         longitude: 13.405156,
         latitudeDelta: 0.3701,
         longitudeDelta: 0.4301,
+    });
+    const lastMapPos = useSelector(state => state.events.lastMapPos);
+    const fetching = useSelector(state => state.events.fetching);
+    const events = useSelector(state => state.events.map);
+    const date = useSelector(state => state.ui.date);
+
+    if ((!lastMapPos || calcDistance(lastMapPos, region) > 15) && !fetching) {
+        dispatch(fetchForMap({ latitude: region.latitude, longitude: region.longitude }));
+    }
+
+    const showableEvents = events.filter((event) => new Date(event.date).toDateString() == new Date(date).toDateString());
+
+    let markerComps = [];
+    showableEvents.forEach(event => {
+        markerComps.push(
+            <Marker
+                key={event.id}
+                coordinate={{
+                    latitude: Number(event.latitude),
+                    longitude: Number(event.longitude),
+                }}
+                onCalloutPress={e => navigation.navigate('details', { event: event })}
+                title={event.title}
+                description={'Ab ' + event.time.slice(0, 5) + ' Uhr | ' + event.location}
+            />
+        );
     });
 
 
@@ -17,16 +50,8 @@ export default function Map(props) {
             initialRegion={region}
             onRegionChange={setRegion}
         >
-            <Marker
-                coordinate={{
-                    latitude: 52.519802,
-                    longitude: 13.405156,
-                }}
-                onPress={e => console.log(e.nativeEvent)}
-                title='Geburtstag am Lietzensee dfshjfd jhfdsh'
-                description='Ab 22 Uhr'
-            />
-            <Marker
+            { markerComps }
+            { /* <Marker
                 coordinate={{
                     latitude: 52.529802,
                     longitude: 13.415156,
@@ -44,7 +69,7 @@ export default function Map(props) {
                         <View style={styles.arrow} />
                     </View>
                 </Callout>
-            </Marker>
+            </Marker> */ }
         </MapView>
     );
 }

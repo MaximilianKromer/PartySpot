@@ -1,5 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { eventStyles } from '../styles/Event';
 import Tag from './Tag';
 
@@ -8,6 +9,7 @@ export default function EventItem(props) {
     const date_obj = (props.event.date) ? new Date(props.event.date) : null;
     const date = (props.event.date) ? date_obj.getDate() + '.' + (date_obj.getMonth() + 1) + '. ' : null;
     */
+    const navigation = useNavigation();
 
     let tags = [];
     const rootTags = props.event.tags ? props.event.tags : [];
@@ -16,7 +18,7 @@ export default function EventItem(props) {
     const time = (props.event.date) ? 'Ab ' + props.event.time.slice(0, 5) + ' Uhr' : null;
 
     return (
-        <View style={styles.wrapper}>
+        <TouchableOpacity style={styles.wrapper} onPress={() => navigation.navigate('details', { event: props.event })}>
               <Text style={eventStyles.headline} >{props.event.title}</Text>
               <View style={styles.locationContainer}>
                   <Text style={eventStyles.location} >{props.event.location}</Text>
@@ -27,7 +29,7 @@ export default function EventItem(props) {
                 </View>
               <Text style={eventStyles.time} >{ time }</Text>
               <Text style={eventStyles.text} numberOfLines={6}>{props.event.description}</Text>
-        </View>
+        </TouchableOpacity>
     );
 }
 

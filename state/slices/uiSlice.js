@@ -47,6 +47,7 @@ const initialState = {
     popupOpened: false,
     city: 'Berlin',
     distance: 25,
+    date: new Date(Date.now()).toString(),
     tags: [
         {
             text: 'Ab 16',
@@ -88,7 +89,37 @@ export const uiSlice = createSlice({
         },
         toogleTagState: (state, action) => {
             state.tags[action.payload].activated = state.tags[action.payload].activated ? false : true;
-        }
+        },
+        resetUI: (state, action) => {
+            state.popupOpened = false;
+            state.city = 'Berlin';
+            state.distance = 25;
+            state.date = Date.now();
+            state.tags = [
+                {
+                    text: 'Ab 16',
+                    activated: false
+                },{
+                    text: 'Park',
+                    activated: false
+                },{
+                    text: '4Free',
+                    activated: false
+                },{
+                    text: 'Festival',
+                    activated: false
+                },{
+                    text: 'Club',
+                    activated: false
+                },{
+                    text: 'Blahblah',
+                    activated: false
+                },
+            ];
+        },
+        setDate: (state, action) => {
+            state.date = action.payload;
+        },
     },
     extraReducers: {
         [toogleTag.fulfilled]: (state, action) => {
@@ -97,6 +128,6 @@ export const uiSlice = createSlice({
     }
 });
 
-export const { openPopup, closePopup, setDistanceState, setCityState, toogleTagState } = uiSlice.actions;
+export const { openPopup, closePopup, setDistanceState, setCityState, toogleTagState, resetUI, setDate } = uiSlice.actions;
 
 export default uiSlice.reducer;
