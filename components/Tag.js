@@ -3,12 +3,13 @@ import { View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { buttonStyles } from '../styles/Button';
 import { colors } from '../styles/Global';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Tag(props) {
 
     const disabledStyle = props.disabled ? buttonStyles.disabled : null;
 
-    let color;
+    let color = colors.primary;
 
     switch (props.text) {
         case 'Festival':
@@ -29,6 +30,14 @@ export default function Tag(props) {
         default:
             color = colors.primary;
             break;
+    }
+
+    if (props.type && props.type == 'edit') {
+        return (
+            <TouchableOpacity style={[buttonStyles.tag, disabledStyle, {backgroundColor: color}]} onPress={props.onPress}>
+                <Text style={buttonStyles.textBold} >+</Text>
+            </TouchableOpacity>
+        );
     }
 
     if (props.touchable) {
