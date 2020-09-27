@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // import Modal from 'react-native-modal';
 // import Modal from 'modal-enhanced-react-native-web';
 import { View, StyleSheet, Platform, Text, TouchableOpacity } from 'react-native';
@@ -16,6 +16,8 @@ const Modal = Platform.select({
 })();
 
 export default function FilterPopup(props) {
+    const isFirstRun = useRef(true);
+
     const [sliderValue, setSliderValue] = useState(25);
     const popupOpened = useSelector(state => state.ui.popupOpened);
     const city = useSelector(state => state.ui.city);
@@ -35,10 +37,14 @@ export default function FilterPopup(props) {
             </TouchableOpacity>
         );
     });
+    useEffect (() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
 
-    useEffect(() => {
         dispatch(setDistance(sliderValue));
-    }, [sliderValue])
+    }, [sliderValue]);
     
     return (
         <Modal
