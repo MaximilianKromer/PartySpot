@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from "react-native";
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { event } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 import { calcDistance } from '../helper/Distance';
 import { fetchForMap } from '../state/slices/eventsSlice';
