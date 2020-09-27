@@ -11,21 +11,24 @@ export default function Searchbar(props) {
     const tags = useSelector(state => state.ui.tags);
     const dispatch = useDispatch();
 
-    const cityDistanceTag = city ? <Tag text={city} /> : <Tag text={distance + ' km'} />;
+    const cityDistanceTag = city ? <Tag text={city} touchable={true} onPress={() => dispatch(openPopup())}/> : <Tag text={distance + ' km'} touchable={true} onPress={() => dispatch(openPopup())}/>;
 
     let tagsComponent = [];
     tags.forEach((tag, index) => {
         if (tag.activated) {
             tagsComponent.push(
-                <Tag text={tag.text} key={index} />
+                <Tag text={tag.text} key={index} touchable={true} onPress={() => dispatch(openPopup())}/>
             );
         }
     });
 
     return (
-        <TouchableOpacity style={HeaderStyles.header} activeOpacity={1} onPress={() => dispatch(openPopup())}>
-            {cityDistanceTag}
-            {tagsComponent}
-        </TouchableOpacity>
+        <View style={HeaderStyles.container}>
+            <ScrollView contentContainerStyle={HeaderStyles.scrollHeader} horizontal={true} fadingEdgeLength={15} >
+                {cityDistanceTag}
+                {tagsComponent}
+                <Tag type='edit' onPress={() => dispatch(openPopup())}/>
+            </ScrollView>
+        </View>
     );
 }

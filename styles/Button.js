@@ -8,6 +8,12 @@ export const buttonStyles = StyleSheet.create({
         color: colors.white,
         marginHorizontal: 10,
     },
+    textBold: {
+        fontFamily: fonts.semibold,
+        fontSize: 22,
+        color: colors.white,
+        marginHorizontal: 10,
+    },
     tag: {
         height: 30,
         backgroundColor: colors.primary,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // import Modal from 'react-native-modal';
 // import Modal from 'modal-enhanced-react-native-web';
 import { View, StyleSheet, Platform, Text, TouchableOpacity } from 'react-native';
@@ -16,9 +16,11 @@ const Modal = Platform.select({
 })();
 
 export default function FilterPopup(props) {
+    const isFirstRun = useRef(true);
+
+    const [sliderValue, setSliderValue] = useState(25);
     const popupOpened = useSelector(state => state.ui.popupOpened);
     const city = useSelector(state => state.ui.city);
-    const distance = useSelector(state => state.ui.distance);
     const tags = useSelector(state => state.ui.tags);
     const dispatch = useDispatch();
 
@@ -35,6 +37,14 @@ export default function FilterPopup(props) {
             </TouchableOpacity>
         );
     });
+    useEffect (() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
+
+        dispatch(setDistance(sliderValue));
+    }, [sliderValue]);
     
     return (
         <Modal
@@ -64,11 +74,11 @@ export default function FilterPopup(props) {
 
                 <Text style={modalStyles.headline} >Umkreis</Text>
                     
-                <Text style={[modalStyles.sliderText, sliderDisabled]} >{distance} km</Text>
+                <Text style={[modalStyles.sliderText, sliderDisabled]} >{sliderValue} km</Text>
 
                 <Slider
-                        value={distance}
-                        onValueChange={(value) => dispatch(setDistance(value))}
+                        value={sliderValue}
+                        onValueChange={(value) => setSliderValue(value)}
                         style={[styles.sliderStyle, sliderDisabled]}
                         minimumValue={1}
                         maximumValue={60}

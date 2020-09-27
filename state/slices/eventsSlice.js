@@ -3,6 +3,7 @@ import { Backend } from "../../network/Connections";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { calcDistance } from "../../helper/Distance";
+import * as Location from 'expo-location';
 
 function arrayContainsArray (superset, subset) {
     return subset.every(function (value) {
@@ -25,7 +26,7 @@ export const fetchByCity = createAsyncThunk(
                 dispatch(applyFilter());
             }
             if (data.error) {
-                rejectWithValue(data.message);
+                return rejectWithValue(data.message);
             }
             return { status, statusText, data };
         } catch (err) {
@@ -43,8 +44,13 @@ export const fetchByGPS = createAsyncThunk(
     'events/fetchByGPS',
     async (payload, { dispatch, rejectWithValue, getState }) => {
         try {
-            const state = getState();
-            const { status, statusText, data } = await Backend.post('/get_events_by_pos.php', { latitude: state.events.user.latitude, longitude: state.events.user.longitude, distance: 60 });
+            const geoPermission = await Location.requestPermissionsAsync();
+            if (!geoPermission.status || geoPermission.status != "granted" ) {
+                return rejectWithValue({ locationErr: true });
+            }
+            const { coords } = await Location.getCurrentPositionAsync();
+            dispatch(updateUserPos({ latitude: coords.latitude, longitude: coords.longitude}));
+            const { status, statusText, data } = await Backend.post('/get_events_by_pos.php', { latitude: coords.latitude, longitude: coords.longitude, distance: 60 });
             // console.log(getState(), status, statusText, data);
             if (status == 200 && data.error == false) {
                 data.events.forEach(event => {
@@ -55,7 +61,7 @@ export const fetchByGPS = createAsyncThunk(
                 dispatch(applyFilter());
             }
             if (data.error) {
-                rejectWithValue(data.message);
+                return rejectWithValue(data.message);
             }
             return { status, statusText, data };
         } catch (err) {
@@ -83,7 +89,7 @@ export const fetchForMap = createAsyncThunk(
                 return { status, statusText, data };
             }
             if (data.error) {
-                rejectWithValue(data.message);
+                return rejectWithValue(data.message);
             }
             return { status, statusText, data };
         } catch (err) {
@@ -109,11 +115,10 @@ export const applyFilter = createAsyncThunk(
             }
         });
         if (!state.ui.city) {
-
             rawEvents = state.events.raw.map((oldEvent) => {
                 let newEvent = {};
                 newEvent = { ...oldEvent};
-                newEvent.distance = calcDistance(state.events.user, { latitude: oldEvent.latitude, longitude: oldEvent.longitude });
+                newEvent.distance = calcDistance(state.events.userPos, { latitude: oldEvent.latitude, longitude: oldEvent.longitude });
                 return newEvent
             });
             rawEvents = rawEvents.filter(event => event.distance <= state.ui.distance);
@@ -138,7 +143,7 @@ export const applyFilter = createAsyncThunk(
 );
 
 const initialState = {
-    user: {
+    userPos: {
         latitude: 52.519806,
         longitude: 13.405167,
     },
@@ -176,10 +181,13 @@ export const eventsSlice = createSlice({
                 state.favourites.sort((a, b) => new Date(a.date) - new Date(b.date));
             }
         },
+        updateUserPos: (state, action) => {
+            state.userPos = action.payload;
+        },
         resetEvents: (state, action) => {
-            state.user = {
-                latitude: 52.519806,
-                longitude: 13.405167,
+            state.userPos = {
+                latitude: null,
+                longitude: null,
             };
             state.fetching = false;
             state.lastFetch = null;
@@ -219,8 +227,10 @@ export const eventsSlice = createSlice({
             state.fetching = false;
             if (!action.payload) {
                 state.filtered = ([{ date: 'Offline', data: [] }]);
+            } else if (action.payload.locationErr) {
+                state.filtered = ([{ date: 'Standortzugriff verweigert', data: [] }]);
             } else {
-                state.filtered = ([{ date: 'Fehler', data: [{ title: action.payload }] }]);
+                state.filtered = ([{ date: 'Fehler: ' + action.payload, data: [{ title: action.payload }] }]);
             }
         },
         [fetchByGPS.fulfilled]: (state, action) => {
@@ -250,6 +260,6 @@ export const eventsSlice = createSlice({
     }
 });
 
-export const { updateRaw, toogleFavourite, resetEvents, updateMapPos } = eventsSlice.actions;
+export const { updateRaw, toogleFavourite, resetEvents, updateMapPos, updateUserPos } = eventsSlice.actions;
 
 export default eventsSlice.reducer;
